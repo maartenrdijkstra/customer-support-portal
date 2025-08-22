@@ -1,7 +1,8 @@
 import { ref } from "vue";
 import axios from "axios";
+import { User } from "./types/User";
 
-export const user = ref(null);
+export const user = ref(null as User | null);
 
 export const fetchUser = async () => {
     try {
