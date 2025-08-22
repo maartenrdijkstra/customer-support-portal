@@ -19,7 +19,11 @@
 
             <button type="submit">Login</button>
         </form>
-
+        <p class="forgot-password">
+            <router-link to="/forgot-password"
+                >Wachtwoord vergeten?</router-link
+            >
+        </p>
         <p class="error" v-if="error">{{ error }}</p>
     </div>
 </template>
@@ -51,7 +55,7 @@ const login = async () => {
             error.value = "Ongeldige inloggegevens";
         }
     } catch (err) {
-        if (err.response?.status === 401) {
+        if (err.response.status === 401) {
             error.value = "Ongeldige inloggegevens";
         } else {
             error.value = "Er is een fout opgetreden bij het inloggen.";
@@ -108,5 +112,19 @@ const login = async () => {
 
 .error {
     color: red;
+}
+
+.forgot-password {
+    margin-top: 10px;
+    text-align: right;
+}
+
+.forgot-password a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.forgot-password a:hover {
+    color: #0056b3;
 }
 </style>
