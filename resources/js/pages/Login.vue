@@ -28,6 +28,7 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { fetchUser } from "../auth";
 
 const email = ref("");
 const password = ref("");
@@ -44,13 +45,13 @@ const login = async () => {
         });
 
         if (response.data.success) {
-            const me = await axios.get("/api/me");
+            await fetchUser(); // update globale user
             router.push("/tickets");
         } else {
             error.value = "Ongeldige inloggegevens";
         }
     } catch (err) {
-        if (err.response.status === 401) {
+        if (err.response?.status === 401) {
             error.value = "Ongeldige inloggegevens";
         } else {
             error.value = "Er is een fout opgetreden bij het inloggen.";
