@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         // Admin user
         User::factory()->create([
             'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'email' => 'maartenrdijkstra@gmail.com',
             'is_admin' => true,
             'password' => Hash::make('pw'),
         ]);
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
         // Test user
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'elcilor@gmail.com',
             'is_admin' => false,
             'password' => Hash::make('pw123'),
         ]);
