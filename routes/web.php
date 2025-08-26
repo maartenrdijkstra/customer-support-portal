@@ -24,4 +24,4 @@ Route::middleware('auth:sanctum')->get('/api/me', function (Request $request) {
 });
 
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail']);
-Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
+Route::post('/reset-password', [PasswordResetController::class, 'reset']);

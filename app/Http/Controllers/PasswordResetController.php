@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Models\User;
@@ -14,34 +14,39 @@ class PasswordResetController extends Controller
 {
     // Stap 1: stuur reset link naar email
     public function sendResetLinkEmail(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|exists:users,email',
-    ]);
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
 
-    $token = Str::random(60);
+        $token = Str::random(60);
 
-    DB::table('password_reset_tokens')->updateOrInsert(
-        ['email' => $request->email],
-        [
-            'email'      => $request->email,
-            'token'      => Hash::make($token),
-            'created_at' => Carbon::now(),
-        ]
-    );
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'email'      => $request->email,
+                'token'      => Hash::make($token),
+                'created_at' => Carbon::now(),
+            ]
+        );
 
-    // Link genereren met token & email
-    $resetLink = url("/reset-password?token={$token}&email={$request->email}");
+        // Link genereren met token & email
+        $resetLink = url("/reset-password?token={$token}&email={$request->email}");
 
-    // Mail sturen (hier placeholder)
-    // Mail::to($request->email)->send(new ResetPasswordMail($resetLink));
+        // Mail sturen via Laravel SMTP (Gmail)
+        Mail::raw(
+            "Klik hier om je wachtwoord te resetten: $resetLink\n\nDe link is 60 minuten geldig.",
+            function ($message) use ($request) {
+                $message->to($request->email)
+                        ->subject('Wachtwoord reset - Customer Support Portal');
+            }
+        );
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Resetlink is verzonden naar je e-mailadres.',
-        'reset_link' => $resetLink // voor test/doorgeven aan frontend
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Resetlink is verzonden naar je e-mailadres.'
+        ]);
+    }
 
     // Stap 2: reset het wachtwoord
     public function reset(Request $request)
@@ -64,7 +69,7 @@ class PasswordResetController extends Controller
             ], 400);
         }
 
-        // Token check (hier heel simpel gedaan; in productie strikter doen)
+        // Token check
         if (! Hash::check($request->token, $reset->token)) {
             return response()->json([
                 'success' => false,

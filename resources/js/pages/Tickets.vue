@@ -12,6 +12,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { user } from "../auth";
 
 const me = ref(null);
 const error = ref("");
