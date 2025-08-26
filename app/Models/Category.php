@@ -13,9 +13,8 @@ class Category extends Model
         'name',
     ];
 
-    // Relatie
     public function tickets()
     {
-        return $this->hasMany(Ticket::class);
+        return $this->belongsToMany(Ticket::class);
     }
 }

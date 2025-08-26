@@ -22,22 +22,25 @@ const router = createRouter({
 
 const publicPaths = ["/login", "/forgot-password", "/reset-password"];
 
-// Check login voor alle routes behalve /login
 router.beforeEach(async (to) => {
     if (!user.value) {
-        await fetchUser(); // probeer user op te halen
+        try {
+            await fetchUser();
+        } catch (e) {
+            // user blijft null als niet ingelogd
+        }
     }
+
     if (user.value) {
-        // Ingelogd → blokkeer toegang tot login/forgot/reset en stuur door naar tickets
         if (publicPaths.includes(to.path)) {
             return "/tickets";
         }
     } else {
-        // Niet ingelogd → blokkeer toegang tot private routes
         if (!publicPaths.includes(to.path)) {
             return "/login";
         }
     }
+    return true;
 });
 
 export default router;

@@ -11,7 +11,6 @@ class Ticket extends Model
 
     protected $fillable = [
         'title',
-        'category_id',
         'status',
         'reporter_id',
         'made_timestamp',
@@ -20,9 +19,9 @@ class Ticket extends Model
     ];
 
     // Relaties
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class);
     }
 
     public function reporter()

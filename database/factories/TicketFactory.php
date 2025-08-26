@@ -23,7 +23,6 @@ class TicketFactory extends Factory
 
         return [
             'title' => $this->faker->sentence(4),
-            'category_id' => rand(1, Category::count()),
             'status' => $this->faker->randomElement(['open', 'in_progress', 'closed']),
             'reporter_id' => rand(1, User::count()),
             'made_timestamp' => $this->faker->dateTimeBetween('-1 year', 'now'),
