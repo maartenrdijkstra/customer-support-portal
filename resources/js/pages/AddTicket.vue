@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { getUsers, me, users } from "../stores/user";
+import { getMe, getUsers, me, users } from "../stores/user";
 import { getCategories, categories } from "../stores/categories";
 import axios from "axios";
 import { Ticket } from "../types/Ticket";
@@ -77,6 +77,7 @@ const error = ref("");
 onMounted(async () => {
     try {
         await axios.get("/sanctum/csrf-cookie", { withCredentials: true });
+        await getMe();
         await getUsers();
         await getCategories();
         ticket.value.reporter_id = me.value?.id;
@@ -93,14 +94,10 @@ const submitTicket = async () => {
         return;
     }
 
-    if (ticket.value.assignee_id === null) {
-        error.value = "Selecteer een admin als toegewezen gebruiker.";
-        return;
-    }
-
     try {
         const ticketCopy = {
             ...ticket.value,
+            reporter_id: me.value.id,
             categories: selectedCategories.value,
         };
 
