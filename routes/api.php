@@ -20,3 +20,4 @@ Route::middleware(['web', 'auth:sanctum'])->get('/usertickets', [TicketControlle
 Route::middleware('auth:sanctum')->get('/categorytickets', function (Request $request) {
     return Ticket::where('category_id', $request->input('category_id'))->get();
 });
+Route::middleware('auth:sanctum')->post('/tickets', [TicketController::class, 'store']);

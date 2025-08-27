@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTicketRequest;
+use App\Http\Resources\TicketResource;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 
@@ -26,6 +28,27 @@ class TicketController extends Controller
         return Ticket::with('categories')
             ->where('reporter_id', $user->id)
             ->get();
+    }
+
+    public function store(StoreTicketRequest $request)
+    {
+        // Ticket aanmaken
+        $ticket = Ticket::create([
+            'title' => $request->title,
+            'status' => $request->status,
+            'reporter_id' => $request->reporter_id,
+            'assignee_id' => $request->assignee_id,
+            'made_timestamp' => now(),
+            'last_update_on' => now(),
+        ]);
+
+        // Categories koppelen
+        if ($request->categories) {
+            $ticket->categories()->sync($request->categories);
+        }
+
+        // Resource teruggeven
+        return new TicketResource($ticket->load('categories'));
     }
 }
 

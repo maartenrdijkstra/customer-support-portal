@@ -1,6 +1,10 @@
 <template>
     <p v-if="error" style="color: red">{{ error }}</p>
 
+    <router-link to="/add-ticket" v-if="me && !me.is_admin"
+        >Maak Nieuw Ticket aan</router-link
+    >
+
     <div v-if="me">
         <h4>Tickets</h4>
         <table>
