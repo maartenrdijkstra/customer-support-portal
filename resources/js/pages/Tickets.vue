@@ -34,78 +34,28 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, Ref } from "vue";
-import axios from "axios";
-import { User } from "../types/User";
-import { Ticket } from "../types/Ticket";
-import { Category } from "../types/Category";
-import { user } from "../auth";
+import { onMounted, ref } from "vue";
+import { fetchTickets, tickets } from "../stores/tickets";
+import { getMe, getUsers, me } from "../stores/user";
+import { getCategories } from "../stores/categories";
+import { getUserById } from "../stores/user";
 
-const me = ref<User | null>(null);
-const users = ref<User[]>([]);
 const error = ref("");
-const tickets = ref<Ticket[]>([]);
-const categories = ref<Category[]>([]);
 
-const getData = async () => {
+onMounted(async () => {
     try {
-        const response = await axios.get("/api/me", { withCredentials: true });
-        me.value = response.data;
-        console.log("me", me.value);
+        await getMe();
+        await getUsers();
+        await getCategories();
         if (me.value && me.value.is_admin) {
-            getTickets("/api/alltickets");
+            fetchTickets("/api/alltickets");
         } else {
-            getTickets("/api/usertickets");
+            fetchTickets("/api/usertickets");
         }
     } catch (err) {
-        error.value = "Niet ingelogd of sessie verlopen.";
+        error.value = err?.message || "Onbekende fout";
     }
-};
-
-const getTickets = async (apiCall: string) => {
-    try {
-        const response = await axios.get(apiCall, {
-            withCredentials: true,
-        });
-        tickets.value = response.data;
-        console.log("tickets by user" + tickets.value);
-    } catch (err) {
-        console.error("Fout bij ophalen tickets", err);
-    }
-};
-
-const getUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get("/api/users", {
-            withCredentials: true,
-        });
-        users.value = response.data;
-    } catch (err) {
-        console.error("Fout bij ophalen users", err);
-    }
-};
-
-const getCategories = async (): Promise<void> => {
-    try {
-        const response = await axios.get("/api/categories", {
-            withCredentials: true,
-        });
-        categories.value = response.data;
-    } catch (err) {
-        console.error("Fout bij ophalen categories", err);
-    }
-};
-
-const getUserById = (id: number | null) => {
-    const found = users.value.find((user) => user.id === id);
-    return found ? found.name : "Onbekend";
-};
-
-// Niet meer nodig, want categories zitten direct in ticket.categories
-
-getData();
-getUsers();
-getCategories();
+});
 </script>
 <style scoped>
 table {
