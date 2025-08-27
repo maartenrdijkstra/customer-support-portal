@@ -19,15 +19,15 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         $adminIds = User::where('is_admin', true)->pluck('id')->toArray();
-        $assigneeId = fake()->randomElement($adminIds);
+        $userIds = User::where('is_admin', false)->pluck('id')->toArray();
 
         return [
             'title' => $this->faker->sentence(4),
             'status' => $this->faker->randomElement(['open', 'in_progress', 'closed']),
-            'reporter_id' => rand(1, User::count()),
+            'reporter_id' => $this->faker->randomElement($userIds),
+            'assignee_id' => $this->faker->randomElement($adminIds),
             'made_timestamp' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'last_update_on' => now(),
-            'assignee_id' => $assigneeId,
         ];
     }
 }

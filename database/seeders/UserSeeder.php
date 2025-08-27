@@ -22,10 +22,26 @@ class UserSeeder extends Seeder
             'password' => Hash::make('pw'),
         ]);
 
+        // Admin user 2
+        User::factory()->create([
+            'name' => 'Admin 2',
+            'email' => 'admin@example.com',
+            'is_admin' => true,
+            'password' => Hash::make('pw'),
+        ]);
+
         // Test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'elcilor@gmail.com',
+            'is_admin' => false,
+            'password' => Hash::make('pw123'),
+        ]);
+
+         // Test user 2
+        User::factory()->create([
+            'name' => 'User 2',
+            'email' => 'user@example.com',
             'is_admin' => false,
             'password' => Hash::make('pw123'),
         ]);
