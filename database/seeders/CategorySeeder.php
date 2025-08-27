@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
             'Feature Request',
             'Support',
             'Billing',
-            'Other',
+            'Testing',
         ];
 
         foreach ($categories as $name) {

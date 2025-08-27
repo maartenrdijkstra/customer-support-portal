@@ -3,12 +3,12 @@
 
     <div v-if="me">
         <h4>Tickets</h4>
-
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Titel</th>
+                    <th>Categorieën</th>
                     <th>Status</th>
                     <th>Aangemaakt door</th>
                     <th>Aangemaakt op</th>
@@ -20,6 +20,9 @@
                 <tr v-for="ticket in tickets" :key="ticket.id">
                     <td>{{ ticket.id }}</td>
                     <td>{{ ticket.title }}</td>
+                    <td>
+                        {{ ticket.categories.map((c) => c.name).join(", ") }}
+                    </td>
                     <td>{{ ticket.status }}</td>
                     <td>{{ getUserById(ticket.reporter_id) }}</td>
                     <td>{{ ticket.made_timestamp }}</td>
@@ -90,18 +93,22 @@ const getCategories = async () => {
     }
 };
 
-getData();
-getUsers();
-
 const getUserById = (id) => {
     const user = users.value.find((user) => user.id === id);
     return user ? user.name : "Onbekend";
 };
 
-const getCategoryById = (id) => {
-    const category = categories.value.find((cat) => cat.id === id);
-    return category ? category.name : "Onbekend";
+const getCategoriesByTicket = async (ticketId) => {
+    const ticketCategories = tickets.value
+        .filter((ticket) => ticket.id === ticketId)
+        .map((ticket) => ticket.category.name)
+        .join(", ");
+    return ticketCategories;
 };
+
+getData();
+getUsers();
+getCategories();
 </script>
 <style scoped>
 table {
