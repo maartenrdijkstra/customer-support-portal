@@ -32,8 +32,8 @@
     </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
+<script setup lang="ts">
+import { ref, onMounted, Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 
@@ -46,10 +46,9 @@ const passwordConfirmation = ref("");
 const message = ref("");
 const error = ref("");
 
-// Haal token en email uit querystring
 onMounted(() => {
-    token.value = route.query.token || "";
-    email.value = route.query.email || "";
+    token.value = (route.query.token as string) || "";
+    email.value = (route.query.email as string) || "";
 });
 
 const resetPassword = async () => {

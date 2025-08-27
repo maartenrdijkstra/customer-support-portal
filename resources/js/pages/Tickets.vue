@@ -33,23 +33,26 @@
         </table>
     </div>
 </template>
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
+import { ref, Ref } from "vue";
 import axios from "axios";
+import { User } from "../types/User";
+import { Ticket } from "../types/Ticket";
+import { Category } from "../types/Category";
 import { user } from "../auth";
 
-const me = ref(null);
-const users = ref([]);
+const me = ref<User | null>(null);
+const users = ref<User[]>([]);
 const error = ref("");
-const tickets = ref([]);
-const categories = ref([]);
+const tickets = ref<Ticket[]>([]);
+const categories = ref<Category[]>([]);
 
 const getData = async () => {
     try {
         const response = await axios.get("/api/me", { withCredentials: true });
         me.value = response.data;
         console.log("me", me.value);
-        if (me.value.is_admin == 1) {
+        if (me.value && me.value.is_admin) {
             getTickets("/api/alltickets");
         } else {
             getTickets("/api/usertickets");
@@ -59,7 +62,7 @@ const getData = async () => {
     }
 };
 
-const getTickets = async (apiCall) => {
+const getTickets = async (apiCall: string) => {
     try {
         const response = await axios.get(apiCall, {
             withCredentials: true,
@@ -71,7 +74,7 @@ const getTickets = async (apiCall) => {
     }
 };
 
-const getUsers = async () => {
+const getUsers = async (): Promise<void> => {
     try {
         const response = await axios.get("/api/users", {
             withCredentials: true,
@@ -82,7 +85,7 @@ const getUsers = async () => {
     }
 };
 
-const getCategories = async () => {
+const getCategories = async (): Promise<void> => {
     try {
         const response = await axios.get("/api/categories", {
             withCredentials: true,
@@ -93,18 +96,12 @@ const getCategories = async () => {
     }
 };
 
-const getUserById = (id) => {
-    const user = users.value.find((user) => user.id === id);
-    return user ? user.name : "Onbekend";
+const getUserById = (id: number | null) => {
+    const found = users.value.find((user) => user.id === id);
+    return found ? found.name : "Onbekend";
 };
 
-const getCategoriesByTicket = async (ticketId) => {
-    const ticketCategories = tickets.value
-        .filter((ticket) => ticket.id === ticketId)
-        .map((ticket) => ticket.category.name)
-        .join(", ");
-    return ticketCategories;
-};
+// Niet meer nodig, want categories zitten direct in ticket.categories
 
 getData();
 getUsers();

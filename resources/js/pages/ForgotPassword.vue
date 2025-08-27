@@ -14,8 +14,8 @@
     </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+import { ref, Ref } from "vue";
 import axios from "axios";
 
 const email = ref("");
