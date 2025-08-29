@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::post('/tickets', [TicketController::class, 'store']);
+Route::put('/tickets/{ticket}', [TicketController::class, 'update']);
 
 Route::middleware(['web', 'auth:sanctum'])->get('/categorytickets', function (Request $request) {
     return Ticket::where('category_id', $request->input('category_id'))->get();

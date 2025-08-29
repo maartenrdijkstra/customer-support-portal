@@ -15,7 +15,6 @@
             </select>
         </div>
 
-        <!-- Assignee (alleen admins) -->
         <div>
             <label for="assignee">Toegewezen aan</label>
             <select id="assignee" v-model="form.assignee_id">

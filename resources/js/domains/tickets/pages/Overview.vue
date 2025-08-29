@@ -34,12 +34,12 @@
                     <td>{{ ticket.last_update_on }}</td>
                     <td>{{ getUserById(ticket.assignee_id) }}</td>
                     <td>
-                        <router-link
+                        <RouterLink
                             :to="{
                                 name: 'tickets.edit',
                                 params: { id: ticket.id },
                             }"
-                            >Bewerk ticket</router-link
+                            >Bewerk</RouterLink
                         >
                     </td>
                 </tr>

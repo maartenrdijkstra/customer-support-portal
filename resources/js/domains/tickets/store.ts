@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import axios from "axios";
 import { Ticket } from "../../types/Ticket";
 
@@ -23,3 +23,12 @@ export const createTicket = async (newTicket: Ticket) => {
     if (!data) return;
     tickets.value = data;
 };
+
+export const updateTicket = async (id, updatedTicket) => {
+    const { data } = await axios.put(`/api/tickets/${id}`, updatedTicket);
+    if (!data) return;
+    tickets.value = data;
+};
+
+export const getTicketById = (id) =>
+    computed(() => tickets.value.find((ticket) => ticket.id == id));

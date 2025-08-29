@@ -38,4 +38,14 @@ class TicketController extends Controller
 
         return new TicketResource($ticket->load('categories'));
     }
+
+    public function update(StoreTicketRequest $request, Ticket $ticket) {
+        $ticket->update($request->validated());
+
+        $ticket->categories()->sync($request->input('categories'));
+        
+        $tickets = Ticket::all();
+        
+        return TicketResource::collection($tickets);
+    }
 }
