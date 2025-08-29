@@ -32,23 +32,10 @@ class TicketController extends Controller
 
     public function store(StoreTicketRequest $request)
     {
-        // Ticket aanmaken
-        $ticket = Ticket::create([
-            'title' => $request->title,
-            'status' => $request->status,
-            'reporter_id' => $request->reporter_id,
-            'assignee_id' => $request->assignee_id,
-            'made_timestamp' => now(),
-            'last_update_on' => now(),
-        ]);
+        $ticket = Ticket::create($request->validated());
 
-        // Categories koppelen
-        if ($request->categories) {
-            $ticket->categories()->sync($request->categories);
-        }
+        $ticket->categories()->sync($request->input('categories'));
 
-        // Resource teruggeven
         return new TicketResource($ticket->load('categories'));
     }
 }
-

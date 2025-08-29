@@ -13,7 +13,6 @@ export const getMe = async () => {
         me.value = await axios
             .get("/api/me", { withCredentials: true })
             .then((res) => res.data);
-        console.log("User data:", me.value);
         error.value = "";
     } catch (err) {
         user.value = null;

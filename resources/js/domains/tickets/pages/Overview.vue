@@ -18,6 +18,7 @@
                     <th>Aangemaakt op</th>
                     <th>Laatste update op</th>
                     <th>Toegewezen aan</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,15 @@
                     <td>{{ ticket.made_timestamp }}</td>
                     <td>{{ ticket.last_update_on }}</td>
                     <td>{{ getUserById(ticket.assignee_id) }}</td>
+                    <td>
+                        <router-link
+                            :to="{
+                                name: 'tickets.edit',
+                                params: { id: ticket.id },
+                            }"
+                            >Bewerk ticket</router-link
+                        >
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -39,10 +49,9 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { fetchTickets, tickets } from "../stores/tickets";
-import { getMe, getUsers, me } from "../stores/user";
-import { getCategories } from "../stores/categories";
-import { getUserById } from "../stores/user";
+import { getMe, getUserById, getUsers, me } from "../../../stores/user";
+import { getCategories } from "../../../stores/categories";
+import { fetchTickets, tickets } from "../store";
 
 const error = ref("");
 
