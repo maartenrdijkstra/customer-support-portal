@@ -6,16 +6,16 @@
             <input id="title" v-model="form.title" required />
         </div>
 
-        <div>
+        <!-- <div>
             <label for="status">Status</label>
             <select id="status" v-model="form.status">
                 <option value="open">Open</option>
                 <option value="in_progress">In Progress</option>
                 <option value="closed">Closed</option>
             </select>
-        </div>
+        </div> -->
 
-        <div>
+        <!-- <div>
             <label for="assignee">Toegewezen aan</label>
             <select id="assignee" v-model="form.assignee_id">
                 <option :value="null">Niet toegewezen</option>
@@ -27,7 +27,7 @@
                     {{ user.name }}
                 </option>
             </select>
-        </div>
+        </div> -->
 
         <div>
             <label>Categorieën</label>

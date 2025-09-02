@@ -21,7 +21,7 @@ class StoreTicketRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => 'required|string|max:255',
             'status' => 'required|string',
             'reporter_id' => 'required|exists:users,id',
@@ -29,17 +29,20 @@ class StoreTicketRequest extends FormRequest
             'categories' => 'required|array|min:1', 
             'categories.*' => 'exists:categories,id',
         ];
+
+        if ($this->user && $this->user()->is_admin) {
+            $rules['assignee_id'] = 'nullable|exists:users,id';
+        }
+
+        return $rules;
     }
 
-    public function withValidator($validator)
+    protected function prepareForValidation()
     {
-        $validator->after(function ($validator) {
-            if ($this->assignee_id) {
-                $assignee = \App\Models\User::find($this->assignee_id);
-                if (!$assignee || !$assignee->is_admin) {
-                    $validator->errors()->add('assignee_id', 'Een ticket kan alleen aan een admin toegewezen worden.');
-                }
-            }
-        });
-    }    
+        if (! $this->user() || ! $this->user()->is_admin) {
+            $this->merge([
+                'assignee_id' => null,
+            ]);
+        }
+    }
 }
