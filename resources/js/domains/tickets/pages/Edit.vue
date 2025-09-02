@@ -25,7 +25,6 @@ onMounted(async () => {
 
 const ticket = getTicketById(route.params.id);
 
-// @TODO: FIX BUG
 const handleSubmit = async (data) => {
     console.log(route.params.id, data);
     await updateTicket(route.params.id, data);

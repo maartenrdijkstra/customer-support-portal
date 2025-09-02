@@ -18,7 +18,7 @@
                     <th>Aangemaakt op</th>
                     <th>Laatste update op</th>
                     <th>Toegewezen aan</th>
-                    <th>Actions</th>
+                    <th colspan="2">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,8 +30,8 @@
                     </td>
                     <td>{{ ticket.status }}</td>
                     <td>{{ getUserById(ticket.reporter_id) }}</td>
-                    <td>{{ ticket.made_timestamp }}</td>
-                    <td>{{ ticket.last_update_on }}</td>
+                    <td>{{ formatDate(ticket.made_timestamp) }}</td>
+                    <td>{{ formatDate(ticket.last_update_on) }}</td>
                     <td>{{ getUserById(ticket.assignee_id) }}</td>
                     <td>
                         <RouterLink
@@ -40,6 +40,15 @@
                                 params: { id: ticket.id },
                             }"
                             >Bewerk</RouterLink
+                        >
+                    </td>
+                    <td>
+                        <RouterLink
+                            :to="{
+                                name: 'tickets.show',
+                                params: { id: ticket.id },
+                            }"
+                            >Show</RouterLink
                         >
                     </td>
                 </tr>
@@ -52,6 +61,7 @@ import { onMounted, ref } from "vue";
 import { getMe, getUserById, getUsers, me } from "../../../stores/user";
 import { getCategories } from "../../../stores/categories";
 import { fetchTickets, tickets } from "../store";
+import { formatDate } from "../../../services/helper-methods";
 
 const error = ref("");
 

@@ -45,4 +45,20 @@ class StoreTicketRequest extends FormRequest
             ]);
         }
     }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            // Alleen uitvoeren als er een assignee_id is
+            if ($this->assignee_id) {
+                $assignee = User::find($this->assignee_id);
+
+                if (! $assignee || ! $assignee->is_admin) {
+                    $validator->errors()->add(
+                        'assignee_id',
+                        'Een ticket kan alleen toegewezen worden aan een admin.'
+                    );
+                }
+            }
+        });
+    }
 }

@@ -21,6 +21,7 @@ class TicketResource extends JsonResource
                 'id' => $cat->id,
                 'name' => $cat->name,
             ]),
+            'reactions' => ReactionResource::collection($this->whenLoaded('reactions')),
         ];
     }
 }

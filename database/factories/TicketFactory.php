@@ -26,7 +26,7 @@ class TicketFactory extends Factory
             'status' => $this->faker->randomElement(['open', 'in_progress', 'closed']),
             'reporter_id' => $this->faker->randomElement($userIds),
             'assignee_id' => $this->faker->randomElement($adminIds),
-            'made_timestamp' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'made_timestamp' => now(),
             'last_update_on' => now(),
         ];
     }

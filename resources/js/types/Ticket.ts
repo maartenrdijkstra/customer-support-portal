@@ -1,4 +1,5 @@
 import { Category } from "./Category";
+import { Reaction } from "./Reaction";
 
 export interface Ticket {
     id: number;
@@ -9,4 +10,5 @@ export interface Ticket {
     made_timestamp: string;
     last_update_on: string;
     categories: Category[];
+    reactions: Reaction[];
 }

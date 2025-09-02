@@ -10,13 +10,13 @@ use App\Models\Ticket;
 
 class TicketController extends Controller
 {
-    // Alle tickets (met categorieën)
+
     public function allTickets()
     {
-        return Ticket::with('categories')->get();
+        return Ticket::with(['reactions.user', 'categories'])->get();
     }
 
-    // Alleen tickets van de ingelogde user
+
     public function userTickets(Request $request)
     {
         $user = $request->user();
@@ -25,7 +25,7 @@ class TicketController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return Ticket::with('categories')
+        return Ticket::with(['reactions.user', 'categories'])
             ->where('reporter_id', $user->id)
             ->get();
     }
