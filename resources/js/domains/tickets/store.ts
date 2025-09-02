@@ -27,7 +27,7 @@ export const createTicket = async (newTicket: Ticket) => {
 export const updateTicket = async (id, updatedTicket) => {
     const { data } = await axios.put(`/api/tickets/${id}`, updatedTicket);
     if (!data) return;
-    tickets.value = data;
+    console.log("Updated ticket data:", data);
 };
 
 export const getTicketById = (id) =>
