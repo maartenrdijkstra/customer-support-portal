@@ -18,6 +18,7 @@ Route::middleware(['web', 'auth:sanctum'])->get('/categorytickets', function (Re
 });
 
 Route::middleware(['web', 'auth:sanctum'])->get('/alltickets', [TicketController::class, 'allTickets']);
+Route::middleware(['web', 'auth:sanctum'])->get('/tickets', [TicketController::class, 'index']);
 Route::middleware(['web', 'auth:sanctum'])->get('/usertickets', [TicketController::class, 'userTickets']);
 Route::middleware('auth:sanctum')->get('/categorytickets', function (Request $request) {
     return Ticket::where('category_id', $request->input('category_id'))->get();

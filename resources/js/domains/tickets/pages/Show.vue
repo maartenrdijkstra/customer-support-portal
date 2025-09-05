@@ -11,64 +11,65 @@
             {{ formatDate(ticket.last_update_on) }}
         </p>
         <p>Aangemaakt op: {{ formatDate(ticket.made_timestamp) }}</p>
-        <p>Reacties: <ul>
-            <li v-for="reaction in reactions" :key="reaction.id">
-                {{ getUserById(reaction.user_id) }}: {{ reaction.content }}
-            </li>
-        </ul></p>
-    <form v-if="user?.is_admin" @submit.prevent="handleSubmit">
-        <label for="assignee">Toewijzen aan:</label>
-        <select v-model="selectedAssigneeId">
-            <option v-for="admin in adminUsers" :key="admin.id" :value="admin.id">
-                {{ admin.name }}
-            </option>
-            <option :value="null">Niet toegewezen</option>
-        </select>
-        <button type="submit">Opslaan</button>
-    </form>
+        <div>
+            Reacties:
+            <ul>
+                <li v-for="reaction in reactions" :key="reaction.id">
+                    {{ getUserById(reaction.user_id) }}: {{ reaction.content }}
+                </li>
+            </ul>
+        </div>
+        <form v-if="user?.is_admin">
+            <label for="assignee">Toewijzen aan:</label>
+            <select v-model="selectedAssigneeId">
+                <option
+                    v-for="admin in adminUsers"
+                    :key="admin.id"
+                    :value="admin.id"
+                >
+                    {{ admin.name }}
+                </option>
+                <option :value="null">Niet toegewezen</option>
+            </select>
+            <button type="submit">Opslaan</button>
+        </form>
 
-    
         <p>
-        Toegewezen aan: 
-        {{ selectedAssigneeId !== null ? getUserById(selectedAssigneeId) : "Niet toegewezen" }}
+            Toegewezen aan:
+            {{
+                selectedAssigneeId !== null
+                    ? getUserById(selectedAssigneeId)
+                    : "Niet toegewezen"
+            }}
         </p>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { getTicketById, updateTicket } from "../store";
 import { useRoute, useRouter } from "vue-router";
 import { getUserById, users } from "../../../stores/user";
 import { formatDate } from "../../../services/helper-methods";
 import { user } from "../../../auth";
 import { ref } from "vue";
+import { Ticket } from "../../../types/Ticket";
+import { ticketStore } from "../store";
 
 const router = useRouter();
 const route = useRoute();
-const ticket = getTicketById(route.params.id);
 
-const selectedAssigneeId = ref<number | null>(ticket.value?.assignee_id ?? null);
+const tickets = ticketStore.getters.all;
+
+const ticket = ticketStore.getters.getById(route.params.id);
+
+const selectedAssigneeId = ref<number | null>(
+    ticket.value?.assignee_id ?? null
+);
 const assignee = getUserById(selectedAssigneeId.value) || "Niet toegewezen";
 const reactions = ticket.value?.reactions || [];
 const reporter_id = ticket.value?.reporter_id || null;
 const reporter = getUserById(reporter_id) || "Onbekend";
 
-
-
 const adminUsers = users.value.filter((user) => user.is_admin);
-
-
-//TODO: Fix bug with updating assignee
-const handleSubmit = async () => {
-    try {
-        await updateTicket(route.params.id, {
-            assignee_id: selectedAssigneeId.value !== null ? Number(selectedAssigneeId.value) : null
-        });
-    } catch (err) {
-        console.error("Update failed:", err);
-    }
-};
-
 </script>
 <style scoped>
 h2 {

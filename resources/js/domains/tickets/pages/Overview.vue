@@ -1,84 +1,90 @@
 <template>
-    <p v-if="error" style="color: red">{{ error }}</p>
+    <ErrorMessage />
 
-    <router-link to="/add-ticket" v-if="me && !me.is_admin"
-        >Maak Nieuw Ticket aan</router-link
-    >
-
-    <div v-if="me">
-        <h4>Tickets</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Titel</th>
-                    <th>Categorieën</th>
-                    <th>Status</th>
-                    <th>Aangemaakt door</th>
-                    <th>Aangemaakt op</th>
-                    <th>Laatste update op</th>
-                    <th>Toegewezen aan</th>
-                    <th colspan="2">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="ticket in tickets" :key="ticket.id">
-                    <td>{{ ticket.id }}</td>
-                    <td>{{ ticket.title }}</td>
-                    <td>
-                        {{ ticket.categories.map((c) => c.name).join(", ") }}
-                    </td>
-                    <td>{{ ticket.status }}</td>
-                    <td>{{ getUserById(ticket.reporter_id) }}</td>
-                    <td>{{ formatDate(ticket.made_timestamp) }}</td>
-                    <td>{{ formatDate(ticket.last_update_on) }}</td>
-                    <td>{{ getUserById(ticket.assignee_id) }}</td>
-                    <td>
-                        <RouterLink
-                            :to="{
-                                name: 'tickets.edit',
-                                params: { id: ticket.id },
-                            }"
-                            >Bewerk</RouterLink
-                        >
-                    </td>
-                    <td>
-                        <RouterLink
-                            :to="{
-                                name: 'tickets.show',
-                                params: { id: ticket.id },
-                            }"
-                            >Show</RouterLink
-                        >
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <h4>Tickets</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titel</th>
+                <th>Categorieën</th>
+                <th>Status</th>
+                <th>Aangemaakt door</th>
+                <th>Aangemaakt op</th>
+                <th>Laatste update op</th>
+                <th>Toegewezen aan</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="ticket in tickets" :key="ticket.id">
+                <td>{{ ticket.id }}</td>
+                <td>{{ ticket.title }}</td>
+                <!-- <td> -->
+                <!-- {{ ticket.categories.map((c) => c.name).join(", ") }} -->
+                <!-- </td>
+                <td>{{ ticket.status }}</td>
+                <td> -->
+                <!-- {{
+                        // userstore.getters.getById(ticket.reporter_id).value.name
+                    }} -->
+                <!-- </td>
+                <td>{{ formatDate(ticket.made_timestamp) }}</td>
+                <td>{{ formatDate(ticket.last_update_on) }}</td>
+                <td>
+                    {{
+                        userstore.getters.getById(ticket.assignee_id).value
+                            ?.name
+                            ? userstore.getters.getById(ticket.assignee_id)
+                                  .value.name
+                            : "Nog niet toegewezen"
+                    }}
+                </td>
+                <td>
+                    <RouterLink
+                        :to="{
+                            name: 'tickets.edit',
+                            params: { id: ticket.id },
+                        }"
+                        >Bewerk</RouterLink
+                    >
+                </td>
+                <td>
+                    <RouterLink
+                        :to="{
+                            name: 'tickets.show',
+                            params: { id: ticket.id },
+                        }"
+                        >Show</RouterLink
+                    >
+                </td> -->
+            </tr>
+        </tbody>
+    </table>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { getMe, getUserById, getUsers, me } from "../../../stores/user";
 import { getCategories } from "../../../stores/categories";
-import { fetchTickets, tickets } from "../store";
 import { formatDate } from "../../../services/helper-methods";
+import { storeModuleFactory } from "../../../services/store";
+import { userstore } from "../../users/store";
+import { categoryStore } from "../../categories/store";
+import { Ticket } from "../../../types/Ticket";
+import { ticketStore } from "../store";
+import ErrorMessage from "../../../ErrorMessage.vue";
 
 const error = ref("");
 
-onMounted(async () => {
-    try {
-        await getMe();
-        await getUsers();
-        await getCategories();
-        if (me.value && me.value.is_admin) {
-            fetchTickets("/api/alltickets");
-        } else {
-            fetchTickets("/api/usertickets");
-        }
-    } catch (err) {
-        error.value = err?.message || "Onbekende fout";
-    }
-});
+ticketStore.actions.getAll();
+userstore.actions.getAll();
+categoryStore.actions.getAll();
+
+const tickets = ticketStore.getters.all;
+const users = userstore.getters.all;
+const categories = categoryStore.getters.all;
+
+console.log(tickets.value);
 </script>
 <style scoped>
 table {

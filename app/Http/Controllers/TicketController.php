@@ -7,27 +7,22 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Http\Resources\TicketResource;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
+use Illuminate\Support\Arr;
 
 class TicketController extends Controller
 {
 
-    public function allTickets()
+    // TO DO: Fix this
+    public function index(Request $request)
     {
-        return Ticket::with(['reactions.user', 'categories'])->get();
-    }
+        $user = $request->user;
+        $userId = $user['id'];
+        $tickets = Ticket::with(['reactions.user', 'categories']);
 
-
-    public function userTickets(Request $request)
-    {
-        $user = $request->user();
-
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return Ticket::with(['reactions.user', 'categories'])
-            ->where('reporter_id', $user->id)
-            ->get();
+        if($user->is_admin == false) {
+           return ($tickets)->where('reporter_id', $userId)->all()->get();
+            };
+        return $tickets->get();
     }
 
     public function store(StoreTicketRequest $request)

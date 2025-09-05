@@ -10,7 +10,7 @@ import Form from "../components/Form.vue";
 import { useRoute, useRouter } from "vue-router";
 import { Ticket } from "../../../types/Ticket";
 import { ref } from "vue";
-import { createTicket } from "../store";
+import { createTicket, ticketStore } from "../store";
 import { categories } from "../../../stores/categories";
 
 const route = useRoute();
@@ -25,11 +25,7 @@ const ticket = ref({
 });
 
 const handleSubmit = async (data: Ticket) => {
-    try {
-        await createTicket(data);
-        router.push("/tickets");
-    } catch (err) {
-        console.error("Fout bij het aanmaken van ticket:", err);
-    }
+    await ticketStore.actions.create(data);
+    router.push("tickets.overview");
 };
 </script>

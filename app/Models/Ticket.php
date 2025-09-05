@@ -18,11 +18,9 @@ class Ticket extends Model
         'assignee_id',
     ];
 
-    
     const CREATED_AT = 'made_timestamp';
     const UPDATED_AT = 'last_update_on';
 
-    // Relaties
     public function categories()
     {
         return $this->belongsToMany(Category::class);

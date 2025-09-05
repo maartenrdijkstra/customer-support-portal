@@ -17,10 +17,7 @@ class TicketResource extends JsonResource
             'assignee_id' => $this->assignee_id,
             'made_timestamp' => $this->made_timestamp,
             'last_update_on' => $this->last_update_on,
-            'categories' => $this->categories->map(fn($cat) => [
-                'id' => $cat->id,
-                'name' => $cat->name,
-            ]),
+            'category_ids' => $this->categories->pluck('id'),
             'reactions' => ReactionResource::collection($this->whenLoaded('reactions')),
         ];
     }
