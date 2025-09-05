@@ -15,14 +15,13 @@ class TicketController extends Controller
     // TO DO: Fix this
     public function index(Request $request)
     {
-        $user = $request->user;
+        $user = $request->user();
         $userId = $user['id'];
-        $tickets = Ticket::with(['reactions.user', 'categories']);
 
         if($user->is_admin == false) {
-           return ($tickets)->where('reporter_id', $userId)->all()->get();
+           return Ticket::with(['reactions.user', 'categories'])->where('reporter_id', $userId)->get();
             };
-        return $tickets->get();
+        return Ticket::with(['reactions.user', 'categories'])->get();
     }
 
     public function store(StoreTicketRequest $request)
