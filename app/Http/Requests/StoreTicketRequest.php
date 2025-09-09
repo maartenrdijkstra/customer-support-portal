@@ -27,8 +27,10 @@ class StoreTicketRequest extends FormRequest
             'status' => 'required|string',
             'reporter_id' => 'required|exists:users,id',
             'assignee_id' => 'nullable|exists:users,id',
-            'categories' => 'required|array|min:1', 
+            'categories' => 'required||min:1', 
             'categories.*' => 'exists:categories,id',
+            'reactions' => 'nullable|array',
+            'reactions.*' => 'exists:reactions,id'
         ];
 
         if ($this->user && $this->user()->is_admin) {

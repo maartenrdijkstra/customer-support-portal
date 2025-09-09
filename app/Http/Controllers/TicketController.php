@@ -12,37 +12,41 @@ use Illuminate\Support\Arr;
 class TicketController extends Controller
 {
 
-    // TO DO: Fix this
     public function index(Request $request)
     {
         $user = $request->user();
-        $userId = $user['id'];
-
-        if($user->is_admin == false) {
-           return Ticket::with(['reactions.user', 'categories'])->where('reporter_id', $userId)->get();
-            };
-        return Ticket::with(['reactions.user', 'categories'])->get();
+        return $this->returnTicketsBasedOnUserRole($user);
     }
 
     public function store(StoreTicketRequest $request)
     {
         $user = $request->user();
-        $userId = $user['id'];
+        
         $ticket = Ticket::create($request->validated());
 
         $ticket->categories()->sync($request->input('categories'));
 
-
-        return Ticket::with(['reactions.user', 'categories'])->where('reporter_id', $userId)->get();
+        return $this->returnTicketsBasedOnUserRole($user);
     }
 
+    //TODO: Fix this
     public function update(StoreTicketRequest $request, Ticket $ticket) {
-        $ticket->update($request->validated());
-
-        $ticket->categories()->sync($request->input('categories'));
+        $user = $request->user();
         
+        $ticket->categories()->sync($request->input('categories'));
+        $ticket->reactions()->sync($request->input('reactions'));
+        
+        $ticket->update($request->validated());
         $tickets = Ticket::all();
         
-        return TicketResource::collection($tickets);
+        return $this->returnTicketsBasedOnUserRole($user, $tickets);
+    }
+    
+    private function returnTicketsBasedOnUserRole($user, $tickets = null) {
+        
+        if($user->is_admin == false) {
+            return Ticket::with(['reactions.user', 'categories'])->where('reporter_id', $user['id'])->get();
+        };
+        return Ticket::with(['reactions.user', 'categories'])->get();
     }
 }

@@ -10,17 +10,21 @@ import { useRoute, useRouter } from "vue-router";
 import Form from "../components/Form.vue";
 import { computed, onMounted, ref } from "vue";
 import { ticketStore } from "../store";
+import { Ticket } from "../../../types/Ticket";
 
 const route = useRoute();
 const router = useRouter();
 
-const tickts = ticketStore.getters.all;
-
+ticketStore.actions.getAll();
 const ticket = ticketStore.getters.getById(route.params.id);
 
-const handleSubmit = async (data) => {
-    console.log(route.params.id, data);
-    await ticketStore.actions.update(route.params.id, data);
-    router.push({ name: "tickets.overview" });
+const handleSubmit = async (data: Ticket) => {
+    try {
+        console.log(route.params.id, data);
+        await ticketStore.actions.update(route.params.id, data);
+        router.push({ name: "tickets.overview" });
+    } catch (error) {
+        console.error("Failed to update ticket:", error);
+    }
 };
 </script>

@@ -18,7 +18,7 @@ class TicketResource extends JsonResource
             'made_timestamp' => $this->made_timestamp,
             'last_update_on' => $this->last_update_on,
             'category_ids' => $this->categories->pluck('id'),
-            'reactions' => ReactionResource::collection($this->whenLoaded('reactions')),
+            'reactions' => $this->reactions->pluck('id'),
         ];
     }
 }
