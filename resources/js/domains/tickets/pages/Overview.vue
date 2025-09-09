@@ -2,14 +2,14 @@
     <ErrorMessage />
 
     <h4>Tickets</h4>
-    <table>
+    <table v-if="me">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Titel</th>
                 <th>Categorieën</th>
                 <th>Status</th>
-                <th>Aangemaakt door</th>
+                <th v-if="me.is_admin">Aangemaakt door</th>
                 <th>Aangemaakt op</th>
                 <th>Laatste update op</th>
                 <th>Toegewezen aan</th>
@@ -20,15 +20,15 @@
             <tr v-for="ticket in tickets" :key="ticket.id">
                 <td>{{ ticket.id }}</td>
                 <td>{{ ticket.title }}</td>
-                <!-- <td> -->
-                <!-- {{ ticket.categories.map((c) => c.name).join(", ") }} -->
-                <!-- </td>
+                <td>
+                    {{ ticket.categories.map((c) => c.name).join(", ") }}
+                </td>
                 <td>{{ ticket.status }}</td>
-                <td> -->
-                <!-- {{
-                        // userstore.getters.getById(ticket.reporter_id).value.name
-                    }} -->
-                <!-- </td>
+                <td v-if="me.is_admin">
+                    {{
+                        userstore.getters.getById(ticket.reporter_id).value.name
+                    }}
+                </td>
                 <td>{{ formatDate(ticket.made_timestamp) }}</td>
                 <td>{{ formatDate(ticket.last_update_on) }}</td>
                 <td>
@@ -57,7 +57,7 @@
                         }"
                         >Show</RouterLink
                     >
-                </td> -->
+                </td>
             </tr>
         </tbody>
     </table>
@@ -73,6 +73,7 @@ import { categoryStore } from "../../categories/store";
 import { Ticket } from "../../../types/Ticket";
 import { ticketStore } from "../store";
 import ErrorMessage from "../../../ErrorMessage.vue";
+import { User } from "../../../types/User";
 
 const error = ref("");
 
@@ -83,6 +84,7 @@ categoryStore.actions.getAll();
 const tickets = ticketStore.getters.all;
 const users = userstore.getters.all;
 const categories = categoryStore.getters.all;
+getMe();
 
 console.log(tickets.value);
 </script>
