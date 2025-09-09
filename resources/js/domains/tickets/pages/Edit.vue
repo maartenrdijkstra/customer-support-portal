@@ -9,7 +9,6 @@
 import { useRoute, useRouter } from "vue-router";
 import Form from "../components/Form.vue";
 import { computed, onMounted, ref } from "vue";
-import { me } from "../../../stores/user";
 import { ticketStore } from "../store";
 
 const route = useRoute();

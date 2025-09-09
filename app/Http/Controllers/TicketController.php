@@ -26,11 +26,14 @@ class TicketController extends Controller
 
     public function store(StoreTicketRequest $request)
     {
+        $user = $request->user();
+        $userId = $user['id'];
         $ticket = Ticket::create($request->validated());
 
         $ticket->categories()->sync($request->input('categories'));
 
-        return new TicketResource($ticket->load('categories'));
+
+        return Ticket::with(['reactions.user', 'categories'])->where('reporter_id', $userId)->get();
     }
 
     public function update(StoreTicketRequest $request, Ticket $ticket) {

@@ -1,6 +1,8 @@
 <template>
     <ErrorMessage />
-
+    <router-link to="/tickets/create" v-if="me && !me.is_admin"
+        >Maak Nieuw Ticket aan</router-link
+    >
     <h4>Tickets</h4>
     <table v-if="me">
         <thead>

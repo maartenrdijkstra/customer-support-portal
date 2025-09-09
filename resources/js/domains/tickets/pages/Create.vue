@@ -10,10 +10,9 @@ import Form from "../components/Form.vue";
 import { useRoute, useRouter } from "vue-router";
 import { Ticket } from "../../../types/Ticket";
 import { ref } from "vue";
-import { createTicket, ticketStore } from "../store";
+import { ticketStore } from "../store";
 import { categories } from "../../../stores/categories";
 
-const route = useRoute();
 const router = useRouter();
 
 const ticket = ref({
@@ -25,7 +24,8 @@ const ticket = ref({
 });
 
 const handleSubmit = async (data: Ticket) => {
+    console.log(data);
     await ticketStore.actions.create(data);
-    router.push("tickets.overview");
+    router.push({ name: "tickets.overview" });
 };
 </script>
